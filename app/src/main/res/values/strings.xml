@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My BooksCompose</string>
+
+    <string name="product_is_not_available">"%1$s is not available"</string>
+</resources>
