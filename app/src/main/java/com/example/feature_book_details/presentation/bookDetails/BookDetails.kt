@@ -119,8 +119,6 @@ fun BookDetails() {
 
         }
     }
-
-
 }
 
 fun openLink(context: Context, link: String?) {
