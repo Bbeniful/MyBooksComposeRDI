@@ -1,14 +1,13 @@
 package com.example.feature_book_details.domain.use_case
 
-import com.example.core.domain.models.Book
-import com.example.core.domain.repositories.SavedBooksRepository
+import com.example.core.domain.repositories.BookRepository
 import javax.inject.Inject
 
 class DeleteBookUseCase @Inject constructor(
-    private val savedBooksRepository: SavedBooksRepository
+    private val repository: BookRepository
 ) {
 
     suspend fun execute(isbn13: String) {
-        savedBooksRepository.deleteBook(isbn13 = isbn13)
+        repository.deleteBook(isbn13 = isbn13)
     }
 }

@@ -1,5 +1,7 @@
 package com.example.feature_search_book.presentation.searchBooks
 
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -20,9 +23,12 @@ fun SearchBooks(
 ) {
     val books = viewModel.books.collectAsState()
     val isLoading = viewModel.isLoading.collectAsState()
+    val error = viewModel.error.collectAsState()
+    val isNewBooks = viewModel.isNewBooks.collectAsState()
     var hasBeenTouched by remember {
         mutableStateOf(false)
     }
+
     var keyWord by remember { mutableStateOf("") }
 
     if (!hasBeenTouched && keyWord.isEmpty()) {
@@ -48,13 +54,20 @@ fun SearchBooks(
                     onValueChange = {
                         keyWord = it
                         hasBeenTouched = true
+
                         if (it.length >= 3) {
-                            viewModel.searchBooks(it)
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                viewModel.searchBooks(it)
+                            },1500)
                         } else if (it.isEmpty()) {
                             hasBeenTouched = false
                             viewModel.clearBooks()
                         }
                     })
+            }
+
+            if (isNewBooks.value) {
+                Text(text = "Latest books", textAlign = TextAlign.Start, modifier = Modifier.padding(start = 15.dp))
             }
 
             LazyColumn {
@@ -67,8 +80,12 @@ fun SearchBooks(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
 
-            if (hasBeenTouched && books.value.isNullOrEmpty()){
-                Text(text = "No book :(")
+            if (hasBeenTouched && books.value.isNullOrEmpty()) {
+                Text(text = "No book :(", textAlign = TextAlign.Center)
+            }
+
+            if (error.value != null) {
+                Text(textAlign = TextAlign.Center, text = error.value ?: "", color = Color.Red)
             }
 
         }

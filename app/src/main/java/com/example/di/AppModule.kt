@@ -2,13 +2,11 @@ package com.example.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.core.data.local.database.BookDao
 import com.example.core.data.local.database.BookDatabase
 import com.example.core.data.remote.BookApi
-import com.example.core.data.repositories.BookApiRepositoryImpl
-import com.example.core.data.repositories.SavedBooksRepositoryImpl
-import com.example.core.domain.repositories.BookApiRepository
-import com.example.core.domain.repositories.SavedBooksRepository
-import com.example.core.presentation.BookApp
+import com.example.core.data.repositories.BookRepositoryImpl
+import com.example.core.domain.repositories.BookRepository
 import com.example.core.utils.Constants
 import com.example.feature_book_details.domain.use_case.BookDetailsUseCases
 import com.example.feature_book_details.domain.use_case.DeleteBookUseCase
@@ -31,12 +29,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    /* @Provides
-     @Singleton
-     fun provideApp(app: BookApp): BookApp {
-         return app
-     }*/
-
     @Provides
     @Singleton
     fun provideRetrofitApi(): BookApi {
@@ -44,15 +36,10 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create()).build().create(BookApi::class.java)
     }
 
-    @Provides
-    @Singleton
-    fun provideBookRepository(api: BookApi): BookApiRepository {
-        return BookApiRepositoryImpl(api = api)
-    }
 
     @Provides
     @Singleton
-    fun provideBookListUseCases(repository: BookApiRepository): BookListUseCases{
+    fun provideBookListUseCases(repository: BookRepository): BookListUseCases {
         return BookListUseCases(
             getNewBooksUseCase = GetNewBooksUseCase(repository = repository),
             searchBookByNameUseCase = SearchBookByNameUseCase(repository = repository)
@@ -67,23 +54,23 @@ object AppModule {
         ).build()
     }
 
+
     @Provides
     @Singleton
-    fun provideSavedBookRepository(bookDatabase: BookDatabase): SavedBooksRepository {
-        return SavedBooksRepositoryImpl(bookDatabase.dao)
+    fun provideBookRepository(api: BookApi, db: BookDatabase): BookRepository {
+        return BookRepositoryImpl(dao = db.dao, api = api)
     }
 
     @Provides
     @Singleton
     fun provideBookDetailsUseCases(
-        savedBooksRepository: SavedBooksRepository, bookApiRepository: BookApiRepository
+        repository: BookRepository
     ): BookDetailsUseCases {
         return BookDetailsUseCases(
-            saveBook = SaveBookUseCase(savedBooksRepository = savedBooksRepository),
-            getBookUseCase = GetBookUseCase(
-                savedBooksRepository = savedBooksRepository, bookApiRepository = bookApiRepository
-            ),
-            deleteBookUseCase = DeleteBookUseCase(savedBooksRepository = savedBooksRepository)
+            saveBook = SaveBookUseCase(repository = repository), getBookUseCase = GetBookUseCase(
+                repository = repository
+            ), deleteBookUseCase = DeleteBookUseCase(repository = repository)
         )
     }
+
 }

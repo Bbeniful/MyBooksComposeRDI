@@ -1,14 +1,14 @@
 package com.example.feature_book_details.domain.use_case
 
 import com.example.core.domain.models.Book
-import com.example.core.domain.repositories.SavedBooksRepository
+import com.example.core.domain.repositories.BookRepository
 import javax.inject.Inject
 
 class SaveBookUseCase @Inject constructor(
-    private val savedBooksRepository: SavedBooksRepository
+    private val repository: BookRepository
 ) {
 
     suspend fun execute(book: Book){
-        savedBooksRepository.saveBook(book = book.toBookEntity())
+        repository.saveBook(book = book.toBookEntity())
     }
 }

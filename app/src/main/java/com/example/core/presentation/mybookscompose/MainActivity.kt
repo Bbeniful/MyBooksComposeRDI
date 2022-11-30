@@ -2,6 +2,7 @@ package com.example.core.presentation.mybookscompose
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.core.domain.models.Book
@@ -44,7 +47,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
+                    Log.e("back button state ->", "${navController.previousBackStackEntry != null}")
                     BottomNavigationView(navController = navController)
+
                 }
             }
         }
@@ -54,23 +59,17 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun BottomNavigationView(navController: NavHostController) {
-    val isBackButtonVisible by derivedStateOf {
-        navController.previousBackStackEntry != null
-    }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Scaffold Examples") }, navigationIcon = {
-                if (isBackButtonVisible) {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
+    Scaffold(topBar = {
+        TopAppBar(title = { Text("Scaffold Examples") }, navigationIcon = {
+            if (navController.currentBackStackEntry != null) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack, contentDescription = "Back"
+                    )
                 }
-            })
-        },
+            }
+        })
+    },
         bottomBar = { BooksBottomNavigation(navController = navController) },
         content = { padding ->
             ContentView(

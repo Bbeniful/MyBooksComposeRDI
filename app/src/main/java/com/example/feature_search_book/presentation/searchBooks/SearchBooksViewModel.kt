@@ -1,6 +1,5 @@
 package com.example.feature_search_book.presentation.searchBooks
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.models.Book
@@ -27,6 +26,8 @@ class SearchBooksViewModel @Inject constructor(
     private var _error = MutableStateFlow<String?>(null)
     val error = _error.asStateFlow()
 
+    private var _isNewBooks = MutableStateFlow(false)
+    val isNewBooks = _isNewBooks.asStateFlow()
 
     fun searchBooks(name: String) {
         viewModelScope.launch {
@@ -34,13 +35,13 @@ class SearchBooksViewModel @Inject constructor(
             when (val result = bookListUseCases.searchBookByNameUseCase.execute(name)) {
                 is Resources.Success -> {
                     _isLoading.value = false
-
+                    _isNewBooks.value = false
                     val data = result.data
                     _books.value = data?.books
-                    Log.e("books", "${data?.books}")
                 }
                 is Resources.Error -> {
                     _isLoading.value = false
+
                     _error.value = result.message
                     if (result.data != null) {
                         val data = result.data
@@ -57,10 +58,9 @@ class SearchBooksViewModel @Inject constructor(
             when (val result = bookListUseCases.getNewBooksUseCase.execute()) {
                 is Resources.Success -> {
                     _isLoading.value = false
-
+                    _isNewBooks.value = true
                     val data = result.data
                     _books.value = data?.books
-                    Log.e("books", "${data?.books}")
                 }
                 is Resources.Error -> {
                     _isLoading.value = false
@@ -79,6 +79,9 @@ class SearchBooksViewModel @Inject constructor(
         _books.value = listOf()
     }
 
+    fun clearError(){
+        _error.value = ""
+    }
 
     override fun onCleared() {
         super.onCleared()

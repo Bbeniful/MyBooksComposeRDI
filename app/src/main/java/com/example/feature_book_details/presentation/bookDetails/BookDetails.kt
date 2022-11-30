@@ -19,14 +19,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.example.core.presentation.mybookscompose.ui.theme.Purple200
 import com.example.mybookscompose.R
 
 
 @Composable
 fun BookDetails() {
+
     val viewModel = hiltViewModel<BookDetailsViewModel>()
     val book = viewModel.book.collectAsState()
     val isSavedBook = viewModel.isSavedBook.collectAsState()
@@ -41,53 +44,54 @@ fun BookDetails() {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Box {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
 
-                    AsyncImage(
-                        modifier = Modifier.size(300.dp),
-                        model = book.value?.image,
-                        contentDescription = "Image of the selected book",
-                        alignment = Alignment.Center
-                    )
+            ConstraintLayout() {
+
+                val (bookImage, saveOrDeleteIcon) = createRefs()
+
+                AsyncImage(
+                    modifier = Modifier
+                        .size(300.dp)
+                        .constrainAs(bookImage) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                        },
+                    model = book.value?.image,
+                    contentDescription = "Image of the selected book",
+                    alignment = Alignment.Center
+                )
+
+                val resourceId = if (isSavedBook.value) {
+                    R.drawable.ic_delete
+                } else {
+                    R.drawable.ic_save
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                val iconTint = if (isSavedBook.value) {
+                    Color.Red
+                } else {
+                    Color.Gray
+                }
 
-                    val resourceId = if (isSavedBook.value) {
-                        R.drawable.ic_delete
+                IconButton(onClick = {
+                    if (isSavedBook.value) {
+                        viewModel.deleteBook(book = book.value)
                     } else {
-                        R.drawable.ic_save
+                        viewModel.saveBook(book = book.value)
                     }
-
-                    val iconTint = if (isSavedBook.value) {
-                        Color.Red
-                    } else {
-                        Color.Gray
-                    }
-
-                    IconButton(onClick = {
-                        if (isSavedBook.value) {
-                            viewModel.deleteBook(book = book.value)
-                        } else {
-                            viewModel.saveBook(book = book.value)
-                        }
-                    }, modifier = Modifier.padding(top = 12.dp)) {
-                        Icon(
-                            painter = painterResource(id = resourceId),
-                            contentDescription = "icon of save book",
-                            tint = iconTint,
-                        )
-                    }
-
+                }, modifier = Modifier
+                    .padding(top = 12.dp)
+                    .constrainAs(saveOrDeleteIcon) {
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                    }) {
+                    Icon(
+                        painter = painterResource(id = resourceId),
+                        contentDescription = "icon of save book",
+                        tint = iconTint,
+                    )
                 }
             }
 
@@ -109,14 +113,21 @@ fun BookDetails() {
                     id = R.string.product_is_not_available, "Title"
                 ), fontSize = 16.sp
             )
-            Text(modifier = Modifier.clickable {
-                openLink(context, book.value?.url)
-            },
+            Text(
+                modifier = Modifier.clickable {
+                    openLink(context, book.value?.url)
+                },
                 text = ("Buy it from: " + book.value?.url) ?: stringResource(
                     id = R.string.product_is_not_available, "Title"
                 ), fontSize = 16.sp
             )
 
+        }
+
+        val error = viewModel.error.collectAsState()
+
+        if (error.value != null) {
+            Text(text = error.value ?: "")
         }
     }
 }
