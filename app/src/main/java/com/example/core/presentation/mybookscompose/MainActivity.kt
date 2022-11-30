@@ -29,15 +29,23 @@ import com.example.core.domain.models.Book
 import com.example.core.presentation.actionBar.ActionBarComp
 import com.example.core.presentation.bottomNavigation.BooksBottomNavigation
 import com.example.core.presentation.mybookscompose.ui.theme.MyBooksComposeTheme
+import com.example.core.utils.BottomItems
 import com.example.core.utils.Routes
 import com.example.feature_book_details.presentation.bookDetails.BookDetails
 import com.example.feature_saved_books.presentation.savedBooksList.SavedBooks
 import com.example.feature_search_book.presentation.searchBooks.SearchBooks
 import com.example.feature_search_book.presentation.searchBooks.SearchBooksViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        var topBarTitle = MutableStateFlow("Default")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -47,7 +55,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    Log.e("back button state ->", "${navController.previousBackStackEntry != null}")
                     BottomNavigationView(navController = navController)
 
                 }
@@ -59,9 +66,17 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun BottomNavigationView(navController: NavHostController) {
+    val items = listOf(
+        BottomItems.SEARCH_BOOK, BottomItems.SAVED_BOOKS
+    )
+    val showBackArrow =
+        navController.currentBackStackEntryAsState().value?.destination?.route !in items.map { it.route }
+
+    val title = MainActivity.topBarTitle.collectAsState()
+
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Scaffold Examples") }, navigationIcon = {
-            if (navController.currentBackStackEntry != null) {
+        TopAppBar(title = { Text(text = title.value) }, navigationIcon = {
+            if (showBackArrow) {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack, contentDescription = "Back"
@@ -70,7 +85,7 @@ fun BottomNavigationView(navController: NavHostController) {
             }
         })
     },
-        bottomBar = { BooksBottomNavigation(navController = navController) },
+        bottomBar = { BooksBottomNavigation(bottomItems = items, navController = navController) },
         content = { padding ->
             ContentView(
                 modifier = Modifier.padding(padding), navController = navController
@@ -78,14 +93,15 @@ fun BottomNavigationView(navController: NavHostController) {
         })
 }
 
+
 @Composable
 fun ContentView(modifier: Modifier = Modifier, navController: NavHostController) {
     NavHost(navController = navController, startDestination = Routes.SEARCH_BOOK) {
-        composable(Routes.SEARCH_BOOK) {
+        composable(route = Routes.SEARCH_BOOK) {
             SearchBooks(navController = navController)
         }
 
-        composable(Routes.SAVED_BOOK) {
+        composable(route = Routes.SAVED_BOOK) {
             SavedBooks(navController = navController)
         }
         composable(
@@ -97,6 +113,25 @@ fun ContentView(modifier: Modifier = Modifier, navController: NavHostController)
             })
         ) {
             BookDetails()
+        }
+    }
+}
+
+fun setTitle(currentRoute: String): String {
+    return when (currentRoute) {
+        Routes.BOOK_DETAILS -> {
+            BottomItems.BOOK_DETAILS.title
+        }
+        Routes.SEARCH_BOOK -> {
+            BottomItems.SEARCH_BOOK.title
+
+        }
+        Routes.SAVED_BOOK -> {
+            BottomItems.SAVED_BOOKS.title
+
+        }
+        else -> {
+            "Default title"
         }
     }
 }

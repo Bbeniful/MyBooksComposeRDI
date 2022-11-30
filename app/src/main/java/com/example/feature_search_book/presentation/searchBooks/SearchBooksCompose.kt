@@ -15,6 +15,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.core.presentation.mybookscompose.MainActivity
+import com.example.core.utils.BottomItems
 import com.example.feature_search_book.presentation.searchBooks.component.BookItem
 
 @Composable
@@ -33,6 +35,10 @@ fun SearchBooks(
 
     if (!hasBeenTouched && keyWord.isEmpty()) {
         viewModel.getNewBook()
+    }
+
+    LaunchedEffect(Unit){
+        MainActivity.topBarTitle.value = BottomItems.SEARCH_BOOK.title
     }
 
     Box(

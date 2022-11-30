@@ -14,51 +14,52 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.core.utils.BottomItems
+import com.example.core.utils.Routes
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun BooksBottomNavigation(navController: NavHostController) {
-    val items = listOf(
-        BottomItems.SEARCH_BOOK,
-        BottomItems.SAVED_BOOKS
-    )
+fun BooksBottomNavigation(bottomItems: List<BottomItems>,navController: NavHostController) {
 
+    val showBottomBar = navController
+        .currentBackStackEntryAsState().value?.destination?.route in bottomItems.map { it.route }
 
+    if (showBottomBar){
+        BottomNavigation(
+            backgroundColor = Color.Gray,
+            contentColor = Color.Black
+        ) {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+            bottomItems.forEach { item ->
 
-    BottomNavigation(
-        backgroundColor = Color.Gray,
-        contentColor = Color.Black
-    ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-        items.forEach { item ->
+                BottomNavigationItem(
+                    selected = currentRoute == item.route,
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = item.icon),
+                            contentDescription = item.title
+                        )
+                    },
+                    label = { Text(text = item.title, fontSize = 9.sp)},
+                    selectedContentColor = Color.Blue,
+                    unselectedContentColor = Color.Blue.copy(0.4f),
+                    alwaysShowLabel = true,
+                    onClick = {
+                        navController.navigate(item.route){
+                            navController.graph.startDestinationRoute?.let { route ->
+                                popUpTo(route){
+                                    saveState = false
+                                }
 
-            BottomNavigationItem(
-                selected = currentRoute == item.route,
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.icon),
-                        contentDescription = item.title
-                    )
-                },
-                label = { Text(text = item.title, fontSize = 9.sp)},
-                selectedContentColor = Color.Blue,
-                unselectedContentColor = Color.Blue.copy(0.4f),
-                alwaysShowLabel = true,
-                onClick = {
-                    navController.navigate(item.route){
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route){
-                                saveState = false
                             }
-
+                            launchSingleTop = false
+                            restoreState = false
                         }
-                        launchSingleTop = false
-                        restoreState = false
-                    }
-                })
+                    })
+
+            }
 
         }
-
     }
+
 }

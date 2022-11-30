@@ -22,8 +22,11 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.core.presentation.mybookscompose.MainActivity
 import com.example.core.presentation.mybookscompose.ui.theme.Purple200
+import com.example.core.utils.BottomItems
 import com.example.mybookscompose.R
 
 
@@ -34,6 +37,10 @@ fun BookDetails() {
     val book = viewModel.book.collectAsState()
     val isSavedBook = viewModel.isSavedBook.collectAsState()
     val context = LocalContext.current
+
+    LaunchedEffect(Unit){
+        MainActivity.topBarTitle.value = book.value?.title ?: "Book details"
+    }
 
     Box(
         modifier = Modifier
