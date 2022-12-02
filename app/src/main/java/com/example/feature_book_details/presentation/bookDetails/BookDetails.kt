@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import com.example.core.presentation.mybookscompose.MainActivity
 import com.example.core.presentation.mybookscompose.ui.theme.Purple200
 import com.example.core.utils.BottomItems
+import com.example.feature_book_details.presentation.bookDetails.component.BookTextItem
 import com.example.mybookscompose.R
 
 
@@ -38,7 +39,7 @@ fun BookDetails() {
     val isSavedBook = viewModel.isSavedBook.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         MainActivity.topBarTitle.value = book.value?.title ?: "Book details"
     }
 
@@ -102,37 +103,26 @@ fun BookDetails() {
                 }
             }
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Text(
-                    text = book.value?.title ?: stringResource(
-                        id = R.string.product_is_not_available, "Title"
-                    ), fontSize = 20.sp, fontWeight = FontWeight.Bold
-                )
-            }
-            Spacer(modifier = Modifier.height(25.dp))
-            Text(
-                text = book.value?.subtitle ?: stringResource(
-                    id = R.string.product_is_not_available, "Subtitle"
-                ), fontSize = 16.sp
-            )
-            Text(
-                text = ("Price: " + book.value?.price) ?: stringResource(
+            BookTextItem(
+                text = book.value?.title ?: stringResource(
                     id = R.string.product_is_not_available, "Title"
-                ), fontSize = 16.sp
-            )
-            Text(
-                modifier = Modifier.clickable {
-                    openLink(context, book.value?.url)
-                },
-                text = ("Buy it from: " + book.value?.url) ?: stringResource(
-                    id = R.string.product_is_not_available, "Title"
-                ), fontSize = 16.sp
+                ), fontSize = 20.sp, fontWeight = FontWeight.Bold
             )
 
+            BookTextItem(nameOfText = "Sub Title", text = book.value?.subtitle)
+
+            BookTextItem(
+                nameOfText = "Price", text = book.value?.price
+            )
+
+            BookTextItem(nameOfText = "Buy it from",
+                text = book.value?.url,
+                modifier = Modifier.clickable {
+                    openLink(context, book.value?.url)
+                }, color = Color.Blue)
         }
 
         val error = viewModel.error.collectAsState()
-
         if (error.value != null) {
             Text(text = error.value ?: "")
         }
@@ -142,5 +132,5 @@ fun BookDetails() {
 fun openLink(context: Context, link: String?) {
     if (link.isNullOrEmpty()) return
     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-    context.startActivity(browserIntent)
+    context.startActivity(Intent.createChooser(browserIntent, "Choose one"))
 }
