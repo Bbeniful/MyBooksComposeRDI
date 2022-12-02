@@ -48,12 +48,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideBookDatabase(@ApplicationContext app: Context): BookDatabase {
+    fun provideBookDao(@ApplicationContext app: Context): BookDao {
         return Room.databaseBuilder(
             app, BookDatabase::class.java, Constants.DATABASE_NAME
-        ).build()
+        ).build().dao
     }
-
 
     @Provides
     @Singleton
