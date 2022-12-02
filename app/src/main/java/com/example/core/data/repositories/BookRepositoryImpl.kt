@@ -1,6 +1,7 @@
 package com.example.core.data.repositories
 
 import com.example.core.data.local.database.BookDao
+import com.example.core.data.local.database.BookDatabase
 import com.example.core.data.remote.BookApi
 import com.example.core.domain.models.Book
 import com.example.core.domain.models.BookEntity
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
-    private val dao: BookDao, private val api: BookApi
+    private val db: BookDatabase, private val api: BookApi
 ) : BookRepository {
 
     override suspend fun getBooks(name: String): Resources<Data> {
@@ -31,7 +32,7 @@ class BookRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getBook(isbn13: String): Resources<Book?> {
-        val bookFromDb = dao.getBookByISBN13(isbn13 = isbn13)
+        val bookFromDb = db.dao.getBookByISBN13(isbn13 = isbn13)
         return if (bookFromDb != null) {
             Resources.Success(data = bookFromDb.toBook())
         } else {
@@ -46,15 +47,15 @@ class BookRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSavedBooks(): Flow<List<BookEntity>> {
-        return dao.getAllSavedBooks()
+        return db.dao.getAllSavedBooks()
     }
 
     override suspend fun saveBook(book: BookEntity) {
-        dao.saveBook(bookEntity = book)
+        db.dao.saveBook(bookEntity = book)
     }
 
 
     override suspend fun deleteBook(isbn13: String) {
-        dao.delete(isbn13 = isbn13)
+        db.dao.delete(isbn13 = isbn13)
     }
 }

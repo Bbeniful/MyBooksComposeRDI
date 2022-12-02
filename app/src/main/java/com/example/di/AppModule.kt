@@ -57,12 +57,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideBookRepository(api: BookApi, db: BookDatabase): BookRepository {
-        return BookRepositoryImpl(dao = db.dao, api = api)
-    }
-
-    @Provides
-    @Singleton
     fun provideBookDetailsUseCases(
         repository: BookRepository
     ): BookDetailsUseCases {
