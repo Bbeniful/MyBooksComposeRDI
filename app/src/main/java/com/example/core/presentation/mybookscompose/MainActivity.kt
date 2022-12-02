@@ -12,12 +12,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -25,8 +23,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.core.domain.models.Book
-import com.example.core.presentation.actionBar.ActionBarComp
 import com.example.core.presentation.bottomNavigation.BooksBottomNavigation
 import com.example.core.presentation.mybookscompose.ui.theme.MyBooksComposeTheme
 import com.example.core.utils.BottomItems
@@ -34,10 +30,8 @@ import com.example.core.utils.Routes
 import com.example.feature_book_details.presentation.bookDetails.BookDetails
 import com.example.feature_saved_books.presentation.savedBooksList.SavedBooks
 import com.example.feature_search_book.presentation.searchBooks.SearchBooks
-import com.example.feature_search_book.presentation.searchBooks.SearchBooksViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -75,7 +69,14 @@ fun BottomNavigationView(navController: NavHostController) {
     val title = MainActivity.topBarTitle.collectAsState()
 
     Scaffold(topBar = {
-        TopAppBar(title = { Text(text = title.value) }, navigationIcon = {
+        TopAppBar(title = {
+            Text(
+                text = title.value,
+                fontSize = 20.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }, navigationIcon = {
             if (showBackArrow) {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
