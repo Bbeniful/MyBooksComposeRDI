@@ -8,6 +8,7 @@ import com.example.core.domain.models.Data
 import com.example.core.domain.models.Resources
 import com.example.core.domain.repositories.BookRepository
 import kotlinx.coroutines.flow.Flow
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class BookRepositoryImpl @Inject constructor(
@@ -25,8 +26,8 @@ class BookRepositoryImpl @Inject constructor(
     override suspend fun getNewBooks(): Resources<Data> {
         return try {
             Resources.Success(data = api.getNews())
-        } catch (e: Exception) {
-            Resources.Error(message = e.message ?: "Something went wrong")
+        } catch (e: HttpException) {
+            Resources.Error(message = e.message() ?: "Something went wrong")
         }
     }
 

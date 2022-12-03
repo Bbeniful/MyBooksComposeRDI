@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.domain.helpers.SaveThemeState
 import com.example.core.domain.models.Book
 import com.example.core.domain.models.Resources
 import com.example.feature_book_details.domain.use_case.BookDetailsUseCases
@@ -15,6 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +24,8 @@ import javax.inject.Inject
 class BookDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookDetailsUseCases: BookDetailsUseCases,
-    private val savedBooksUseCase: SavedBooksUseCase
+    private val savedBooksUseCase: SavedBooksUseCase,
+    private val savedThemeHandle: SaveThemeState
 ) : ViewModel() {
 
     private var _book = MutableStateFlow<Book?>(null)
@@ -33,13 +36,13 @@ class BookDetailsViewModel @Inject constructor(
 
     private var _isSavedBook = MutableStateFlow(false)
     val isSavedBook = _isSavedBook.asStateFlow()
-
     init {
         savedStateHandle.get<String>("isbn13")?.let {
             getBook(it)
             isSavedBook(it)
         }
     }
+
 
 
     private fun getBook(isbn13: String) {

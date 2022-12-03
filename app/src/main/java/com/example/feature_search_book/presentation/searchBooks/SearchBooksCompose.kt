@@ -44,7 +44,6 @@ fun SearchBooks(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
             .padding(bottom = 50.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {

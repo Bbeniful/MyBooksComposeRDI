@@ -22,7 +22,7 @@ fun BookTextItem(
     nameOfText: String? = null,
     text: String?,
     fontWeight: FontWeight = FontWeight.Normal,
-    color: Color = Color.Black
+    color: Color = Color.Unspecified
 ) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
         if (nameOfText != null) {
