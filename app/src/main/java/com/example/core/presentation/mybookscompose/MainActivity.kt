@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -41,6 +42,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContent {
 
             MyBooksComposeTheme() {
@@ -64,11 +66,11 @@ fun BottomNavigationView(navController: NavHostController, viewModel: MainViewMo
     val items = listOf(
         BottomItems.SEARCH_BOOK, BottomItems.SAVED_BOOKS
     )
-    val showBackArrow =
+
+    val isDetailsScreen =
         navController.currentBackStackEntryAsState().value?.destination?.route !in items.map { it.route }
     val title = MainActivity.topBarTitle.collectAsState()
     val isDarkTheme = ThemeChooser.isDarkTheme.collectAsState()
-
 
     Scaffold(topBar = {
         TopAppBar(title = {
@@ -84,7 +86,7 @@ fun BottomNavigationView(navController: NavHostController, viewModel: MainViewMo
                     overflow = TextOverflow.Ellipsis
                 )
 
-                if (!showBackArrow) {
+                if (!isDetailsScreen) {
                     Checkbox(checked = isDarkTheme.value, onCheckedChange = {
                         viewModel.saveTheme(it)
                     })
@@ -92,7 +94,7 @@ fun BottomNavigationView(navController: NavHostController, viewModel: MainViewMo
             }
 
         }, navigationIcon = {
-            if (showBackArrow) {
+            if (isDetailsScreen) {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack, contentDescription = "Back"

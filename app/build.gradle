@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.mybookscompose"
-        minSdk 21
+        minSdk 23
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -83,7 +83,7 @@ dependencies {
 
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.10'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     //coil
@@ -98,5 +98,8 @@ dependencies {
     //for ContsraintLayout it compose
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
+    //for Datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("androidx.core:core-splashscreen:1.0.0")
 }
