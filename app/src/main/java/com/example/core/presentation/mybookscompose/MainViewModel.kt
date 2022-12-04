@@ -2,7 +2,7 @@ package com.example.core.presentation.mybookscompose
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core.domain.helpers.SaveThemeState
+import com.example.core.domain.helpers.ThemeDatastore
 import com.example.core.presentation.mybookscompose.ui.ThemeChooser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val savedThemeState: SaveThemeState
+    private val savedThemeState: ThemeDatastore
 ) : ViewModel() {
 
     init {
@@ -21,7 +21,7 @@ class MainViewModel @Inject constructor(
 
     private fun getCurrentTheme(){
         viewModelScope.launch {
-            ThemeChooser.isDarkTheme.value = savedThemeState.getSavedTheme.first()
+            ThemeChooser.isDarkTheme.value = savedThemeState.isDarkTheme.first()
         }
     }
 

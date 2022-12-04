@@ -5,10 +5,8 @@ import androidx.room.Room
 import com.example.core.data.local.database.BookDao
 import com.example.core.data.local.database.BookDatabase
 import com.example.core.data.remote.BookApi
-import com.example.core.data.repositories.BookRepositoryImpl
-import com.example.core.domain.helpers.SaveThemeState
+import com.example.core.domain.helpers.ThemeDatastore
 import com.example.core.domain.repositories.BookRepository
-import com.example.core.presentation.BookApp
 import com.example.core.utils.Constants
 import com.example.feature_book_details.domain.use_case.BookDetailsUseCases
 import com.example.feature_book_details.domain.use_case.DeleteBookUseCase
@@ -70,8 +68,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideThemeDataStore(@ApplicationContext context: Context): SaveThemeState {
-        return SaveThemeState(context = context)
+    fun provideThemeDataStore(@ApplicationContext context: Context): ThemeDatastore {
+        return ThemeDatastore(context = context)
     }
 
 

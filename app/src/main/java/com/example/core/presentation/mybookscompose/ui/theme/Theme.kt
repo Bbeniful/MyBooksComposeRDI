@@ -1,5 +1,6 @@
 package com.example.core.presentation.mybookscompose.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
@@ -30,8 +31,6 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun MyBooksComposeTheme(
-    //darkTheme: Boolean = isSystemInDarkTheme(),
-    isLightTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
 
