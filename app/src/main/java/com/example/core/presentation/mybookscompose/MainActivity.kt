@@ -115,6 +115,7 @@ fun BottomNavigationView(navController: NavHostController, viewModel: MainViewMo
 @Composable
 fun ContentView(modifier: Modifier = Modifier, navController: NavHostController) {
     NavHost(navController = navController, startDestination = Routes.SEARCH_BOOK) {
+
         composable(route = Routes.SEARCH_BOOK) {
             SearchBooks(navController = navController)
         }

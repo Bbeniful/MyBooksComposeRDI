@@ -2,6 +2,7 @@ package com.example.feature_search_book.presentation.searchBooks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.cryptography.CryptographyManager
 import com.example.core.domain.models.Book
 import com.example.core.domain.models.Resources
 import com.example.feature_search_book.domain.useCase.BookListUseCases
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchBooksViewModel @Inject constructor(
-    private val bookListUseCases: BookListUseCases
+    private val bookListUseCases: BookListUseCases,
+    private val cryptographyManager: CryptographyManager
 ) : ViewModel() {
 
     private var _isLoading = MutableStateFlow(false)
@@ -30,6 +32,7 @@ class SearchBooksViewModel @Inject constructor(
     val isNewBooks = _isNewBooks.asStateFlow()
 
     fun searchBooks(name: String) {
+
         viewModelScope.launch {
             _isLoading.value = true
             when (val result = bookListUseCases.searchBookByNameUseCase.execute(name)) {

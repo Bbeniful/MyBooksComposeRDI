@@ -54,7 +54,6 @@ class BookRepositoryImpl @Inject constructor(
         dao.saveBook(bookEntity = book)
     }
 
-
     override suspend fun deleteBook(isbn13: String) {
         dao.delete(isbn13 = isbn13)
     }

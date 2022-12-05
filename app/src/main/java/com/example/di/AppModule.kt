@@ -2,6 +2,8 @@ package com.example.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.core.cryptography.CryptographyManager
+import com.example.core.cryptography.CryptographyManagerImpl
 import com.example.core.data.local.database.BookDao
 import com.example.core.data.local.database.BookDatabase
 import com.example.core.data.remote.BookApi
@@ -72,5 +74,10 @@ object AppModule {
         return ThemeDatastore(context = context)
     }
 
+    @Provides
+    @Singleton
+    fun provideCryptographyManager(): CryptographyManager {
+        return CryptographyManagerImpl()
+    }
 
 }
