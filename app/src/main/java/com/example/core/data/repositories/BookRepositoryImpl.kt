@@ -18,7 +18,7 @@ class BookRepositoryImpl @Inject constructor(
     override suspend fun getBooks(name: String): Resources<Data> {
         return try {
             Resources.Success(data = api.getBooksByName(name))
-        } catch (e: Exception) {
+        } catch (e: HttpException) {
             Resources.Error(message = e.message ?: "Something went wrong")
         }
     }
@@ -38,7 +38,7 @@ class BookRepositoryImpl @Inject constructor(
         } else {
             try {
                 Resources.Success(data = api.getBookByISBN13(isbn13 = isbn13))
-            } catch (e: java.lang.Exception) {
+            } catch (e: HttpException) {
                 Resources.Error(
                     data = api.getBookByISBN13(isbn13 = isbn13), message = e.message ?: ""
                 )

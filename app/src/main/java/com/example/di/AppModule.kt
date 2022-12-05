@@ -72,5 +72,4 @@ object AppModule {
         return ThemeDatastore(context = context)
     }
 
-
 }
