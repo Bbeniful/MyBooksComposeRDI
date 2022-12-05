@@ -73,11 +73,6 @@ fun BottomNavigationView(navController: NavHostController, viewModel: MainViewMo
         BottomItems.SEARCH_BOOK, BottomItems.SAVED_BOOKS
     )
 
-    val context = LocalContext.current
-    val connectivityObserver = NetworkConnectivityObserver(context)
-    val status by connectivityObserver.observe().collectAsState(
-        initial = ConnectivityObserver.Status.Unavailable
-    )
     val isDetailsScreen =
         navController.currentBackStackEntryAsState().value?.destination?.route !in items.map { it.route }
     val title = MainActivity.topBarTitle.collectAsState()
@@ -116,7 +111,7 @@ fun BottomNavigationView(navController: NavHostController, viewModel: MainViewMo
         BooksBottomNavigation(bottomItems = items, navController = navController)
     }, content = { padding ->
         ContentView(
-            modifier = Modifier.padding(padding), navController = navController, status
+            modifier = Modifier.padding(padding), navController = navController
         )
     })
 
@@ -126,9 +121,13 @@ fun BottomNavigationView(navController: NavHostController, viewModel: MainViewMo
 @Composable
 fun ContentView(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
-    status: ConnectivityObserver.Status
+    navController: NavHostController
 ) {
+    val context = LocalContext.current
+    val connectivityObserver = NetworkConnectivityObserver(context)
+    val status by connectivityObserver.observe().collectAsState(
+        initial = ConnectivityObserver.Status.Unavailable
+    )
     if (status == ConnectivityObserver.Status.Lost || status == ConnectivityObserver.Status.Losing || status == ConnectivityObserver.Status.Unavailable) {
 
         NoNetworkConnection()
