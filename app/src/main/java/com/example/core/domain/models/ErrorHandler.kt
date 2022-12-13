@@ -7,7 +7,7 @@ enum class Errors {
 
 }
 
-object ErrorHandle {
+object ErrorHandler {
 
 
     private fun getError(errorCode: Int): Errors {

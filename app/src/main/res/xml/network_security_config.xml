@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+<!--    <base-config>-->
+<!--        <trust-anchors>-->
+<!--            &lt;!&ndash; Trust preinstalled CAs &ndash;&gt;-->
+<!--            <certificates src="system" />-->
+<!--            &lt;!&ndash; Additionally trust user added CAs &ndash;&gt;-->
+<!--            <certificates src="user" />-->
+<!--        </trust-anchors>-->
+<!--    </base-config>-->
+    <domain-config  cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">api.itbook.store</domain>
+        <pin-set expiration="2023-06-07">
+            <pin digest="SHA-256">dCxVwEBZptswd/OhsO4rGsu1Q4v/78CmUja/VP3jPgI=</pin>
+            <!-- backup pin -->
+<!--            <pin digest="SHA-256">dCxVwEBZptswd/OhsO4rGsu1Q4v/78CmUja/VP3jPgI=</pin>-->
+        </pin-set>
+    </domain-config>
+<!--    <debug-overrides>-->
+<!--        <trust-anchors>-->
+<!--            <certificates src="user" />-->
+<!--        </trust-anchors>-->
+<!--    </debug-overrides>-->
+</network-security-config>

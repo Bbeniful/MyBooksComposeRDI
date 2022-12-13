@@ -2,12 +2,12 @@ package com.example.feature_search_book.presentation.searchBooks
 
 import android.os.Handler
 import android.os.Looper
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +31,7 @@ fun SearchBooks(
         mutableStateOf(false)
     }
 
-    var keyWord by remember { mutableStateOf("") }
+    var keyWord by rememberSaveable { mutableStateOf("") }
 
     if (!hasBeenTouched && keyWord.isEmpty()) {
         viewModel.getNewBook()

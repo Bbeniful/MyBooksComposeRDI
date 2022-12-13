@@ -3,8 +3,6 @@ package com.example.feature_book_details.presentation.bookDetails
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -21,16 +19,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.core.presentation.mybookscompose.MainActivity
-import com.example.core.presentation.mybookscompose.ui.theme.Purple200
-import com.example.core.utils.BottomItems
 import com.example.feature_book_details.presentation.bookDetails.component.BookTextItem
 import com.example.mybookscompose.R
-
 
 @Composable
 fun BookDetails() {
@@ -39,9 +32,14 @@ fun BookDetails() {
     val book = viewModel.book.collectAsState()
     val isSavedBook = viewModel.isSavedBook.collectAsState()
     val context = LocalContext.current
+    val isUnlocked = MainActivity.isSecureUnlocked.collectAsState()
 
     LaunchedEffect(Unit) {
-        MainActivity.topBarTitle.value = book.value?.title ?: "Book details"
+        MainActivity.topBarTitle.value = if (book.value?.title == null || !isUnlocked.value) {
+            "Book details"
+        } else {
+            book.value?.title.toString()
+        }
     }
 
     Box(
@@ -85,9 +83,9 @@ fun BookDetails() {
 
                 IconButton(onClick = {
                     if (isSavedBook.value) {
-                        viewModel.deleteBook(book = book.value)
+                        viewModel.deleteBook(book.value)
                     } else {
-                        viewModel.saveBook(book = book.value)
+                        viewModel.saveBook(book.value)
                     }
                 }, modifier = Modifier
                     .padding(top = 12.dp)
@@ -115,11 +113,13 @@ fun BookDetails() {
                 nameOfText = "Price", text = book.value?.price
             )
 
-            BookTextItem(nameOfText = "Buy it from",
+            BookTextItem(
+                nameOfText = "Buy it from",
                 text = book.value?.url,
                 modifier = Modifier.clickable {
                     openLink(context, book.value?.url)
-                }, color = Color.Blue)
+                }, color = Color.Blue
+            )
         }
 
         val error = viewModel.error.collectAsState()

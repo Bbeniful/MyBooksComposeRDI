@@ -4,6 +4,5 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 object ThemeChooser {
 
-
     var isDarkTheme = MutableStateFlow(false)
 }

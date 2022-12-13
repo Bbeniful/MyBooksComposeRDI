@@ -1,7 +1,6 @@
 package com.example.di
 
 import android.content.Context
-import androidx.room.Room
 import com.example.core.cryptography.CryptographyManager
 import com.example.core.cryptography.CryptographyManagerImpl
 import com.example.core.data.local.database.BookDao
@@ -31,13 +30,14 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    private lateinit var database: BookDatabase
+
     @Provides
     @Singleton
     fun provideRetrofitApi(): BookApi {
         return Retrofit.Builder().baseUrl(Constants.URL)
             .addConverterFactory(GsonConverterFactory.create()).build().create(BookApi::class.java)
     }
-
 
     @Provides
     @Singleton
@@ -46,14 +46,6 @@ object AppModule {
             getNewBooksUseCase = GetNewBooksUseCase(repository = repository),
             searchBookByNameUseCase = SearchBookByNameUseCase(repository = repository)
         )
-    }
-
-    @Provides
-    @Singleton
-    fun provideBookDao(@ApplicationContext app: Context): BookDao {
-        return Room.databaseBuilder(
-            app, BookDatabase::class.java, Constants.DATABASE_NAME
-        ).build().dao
     }
 
     @Provides
@@ -80,4 +72,15 @@ object AppModule {
         return CryptographyManagerImpl()
     }
 
+    fun getBookDatabase(app: Context, key: ByteArray): BookDatabase {
+        database = BookDatabase.getInstance(app, key)
+        return database
+    }
+
+    fun getBookDao(): BookDao? {
+        if (this::database.isInitialized) {
+            return database.dao
+        }
+        return null
+    }
 }

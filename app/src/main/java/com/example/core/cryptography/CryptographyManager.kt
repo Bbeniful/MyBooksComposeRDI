@@ -1,5 +1,7 @@
 package com.example.core.cryptography
 
+import android.content.Context
+import androidx.biometric.BiometricPrompt
 import javax.crypto.Cipher
 
 interface CryptographyManager {
@@ -19,11 +21,21 @@ interface CryptographyManager {
     /**
      * The Cipher created with [getInitializedCipherForEncryption] is used here
      */
-    fun encryptData(plaintext: String, cipher: Cipher): EncryptedData
+    fun encryptData(plaintext: ByteArray, cipher: Cipher): EncryptedData
 
     /**
      * The Cipher created with [getInitializedCipherForDecryption] is used here
      */
-    fun decryptData(ciphertext: ByteArray, cipher: Cipher): String
+    fun decryptData(ciphertext: ByteArray, cipher: Cipher): ByteArray
+
+    /**
+     * This method gets cipher to start the authentication flow
+     */
+    fun getCipherForAuthentication(context: Context, isEncryption: Boolean): Cipher?
+
+    /**
+     * This method encrypts or decrypts the text
+     */
+    fun processText(context: Context, text: ByteArray, isEncryption: Boolean, cryptoObject: BiometricPrompt.CryptoObject?): ByteArray
 
 }

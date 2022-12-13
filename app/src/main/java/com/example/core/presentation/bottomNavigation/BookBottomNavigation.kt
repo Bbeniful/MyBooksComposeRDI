@@ -10,15 +10,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.core.utils.BottomItems
-import com.example.core.utils.Routes
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun BooksBottomNavigation(bottomItems: List<BottomItems>,navController: NavHostController) {
+fun BooksBottomNavigation(bottomItems: List<BottomItems>, navController: NavHostController) {
 
     val showBottomBar = navController
         .currentBackStackEntryAsState().value?.destination?.route in bottomItems.map { it.route }
@@ -50,13 +48,11 @@ fun BooksBottomNavigation(bottomItems: List<BottomItems>,navController: NavHostC
                                 popUpTo(route){
                                     saveState = false
                                 }
-
                             }
                             launchSingleTop = false
                             restoreState = false
                         }
                     })
-
             }
 
         }

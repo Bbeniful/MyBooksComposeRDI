@@ -10,7 +10,6 @@ interface BookRepository {
 
     suspend fun getBooks(name: String): Resources<Data>
 
-
     suspend fun getNewBooks(): Resources<Data>
 
     suspend fun getBook(isbn13: String): Resources<Book?>

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core.domain.helpers.ThemeDatastore
 import com.example.core.domain.models.Book
 import com.example.core.domain.models.Resources
 import com.example.feature_book_details.domain.use_case.BookDetailsUseCases
@@ -22,8 +21,7 @@ import javax.inject.Inject
 class BookDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val bookDetailsUseCases: BookDetailsUseCases,
-    private val savedBooksUseCase: SavedBooksUseCase,
-    private val savedThemeHandle: ThemeDatastore
+    private val savedBooksUseCase: SavedBooksUseCase
 ) : ViewModel() {
 
     private var _book = MutableStateFlow<Book?>(null)
@@ -40,8 +38,6 @@ class BookDetailsViewModel @Inject constructor(
             isSavedBook(it)
         }
     }
-
-
 
     private fun getBook(isbn13: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -67,7 +63,6 @@ class BookDetailsViewModel @Inject constructor(
 
     fun saveBook(book: Book?) {
         if (book == null) {
-
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
@@ -76,14 +71,13 @@ class BookDetailsViewModel @Inject constructor(
     }
 
     fun deleteBook(book: Book?) {
-         if (book == null) {
-             return
-         }
+        if (book == null) {
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
             bookDetailsUseCases.deleteBookUseCase.execute(isbn13 = book.isbn13 ?: "")
         }
     }
-
 
     override fun onCleared() {
         super.onCleared()

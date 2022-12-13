@@ -2,6 +2,7 @@ package com.example.core.presentation.mybookscompose
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.cryptography.CryptographyManager
 import com.example.core.domain.helpers.ThemeDatastore
 import com.example.core.presentation.mybookscompose.ui.ThemeChooser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,7 @@ class MainViewModel @Inject constructor(
         getCurrentTheme()
     }
 
-    private fun getCurrentTheme(){
+    private fun getCurrentTheme() {
         viewModelScope.launch {
             ThemeChooser.isDarkTheme.value = savedThemeState.isDarkTheme.first()
         }
@@ -36,4 +37,5 @@ class MainViewModel @Inject constructor(
         super.onCleared()
         viewModelScope.cancel()
     }
+
 }
