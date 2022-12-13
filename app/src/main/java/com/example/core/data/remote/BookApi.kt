@@ -12,9 +12,9 @@ interface BookApi {
     suspend fun getBooksByName(@Path("keyWord") keyWord: String, @Query("token") token: String): Data
 
     @GET("books/{isbn13}")
-    suspend fun getBookByISBN13(@Path("isbn13") isbn13: String, @Query("token") token: String):Book
+    suspend fun getBookByISBN13(@Path("isbn13") isbn13: String, @Query("token") token: String): Book
 
     @GET("new")
-    suspend fun getNews(@Query("token") token: String):Data
+    suspend fun getNews(@Query("token") token: String): Data
 
 }

@@ -20,13 +20,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.core.presentation.mybookscompose.MainActivity
+import com.example.core.presentation.mybookscompose.isEncryption
+import com.example.core.presentation.mybookscompose.showBiometricPrompt
 import com.example.feature_book_details.presentation.bookDetails.component.BookTextItem
 import com.example.mybookscompose.R
 
 @Composable
-fun BookDetails() {
+fun BookDetails(navController: NavHostController) {
 
     val viewModel = hiltViewModel<BookDetailsViewModel>()
     val book = viewModel.book.collectAsState()
@@ -69,20 +72,26 @@ fun BookDetails() {
                     alignment = Alignment.Center
                 )
 
-                val resourceId = if (isSavedBook.value) {
+                val resourceId = if (!isUnlocked.value) {
+                    R.drawable.ic_fingerprint
+                } else if (isSavedBook.value) {
                     R.drawable.ic_delete
                 } else {
                     R.drawable.ic_save
                 }
 
-                val iconTint = if (isSavedBook.value) {
+                val iconTint = if (!isUnlocked.value) {
+                    Color.LightGray
+                } else if (isSavedBook.value) {
                     Color.Red
                 } else {
                     Color.Gray
                 }
 
                 IconButton(onClick = {
-                    if (isSavedBook.value) {
+                    if (!isUnlocked.value) {
+                       showBiometricPrompt(context as MainActivity, isEncryption(context), navController)
+                    } else if (isSavedBook.value) {
                         viewModel.deleteBook(book.value)
                     } else {
                         viewModel.saveBook(book.value)

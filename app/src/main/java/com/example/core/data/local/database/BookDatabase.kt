@@ -22,6 +22,7 @@ abstract class BookDatabase : RoomDatabase() {
         fun getInstance(app: Context, key: ByteArray): BookDatabase {
             if (!this::instance.isInitialized) {
                 instance = Room.databaseBuilder(app, BookDatabase::class.java, Constants.DATABASE_NAME)
+                    .setJournalMode(JournalMode.TRUNCATE)
                     .openHelperFactory(SupportFactory(key))
                     .build()
             }

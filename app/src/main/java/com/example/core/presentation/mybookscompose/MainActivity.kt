@@ -186,17 +186,10 @@ fun ContentView(modifier: Modifier = Modifier, navController: NavHostController,
             })
         ) {
             val openDialog = openPasswordDialog.collectAsState()
-            val isUnlocked = isSecureUnlocked.collectAsState()
             if (openDialog.value) {
                 PasswordDialog(activity)
             }
-            if (isUnlocked.value) {
-                BookDetails()
-            } else {
-                LaunchedEffect(Unit) {
-                    showBiometricPrompt(activity, isEncryption(activity), navController)
-                }
-            }
+            BookDetails(navController)
         }
     }
 }

@@ -67,6 +67,8 @@ class BookDetailsViewModel @Inject constructor(
         }
         viewModelScope.launch(Dispatchers.IO) {
             bookDetailsUseCases.saveBook.execute(book = book)
+        }.invokeOnCompletion { error ->
+            if (error == null) _isSavedBook.value = true
         }
     }
 
@@ -76,6 +78,8 @@ class BookDetailsViewModel @Inject constructor(
         }
         viewModelScope.launch(Dispatchers.IO) {
             bookDetailsUseCases.deleteBookUseCase.execute(isbn13 = book.isbn13 ?: "")
+        }.invokeOnCompletion { error ->
+            if (error == null) _isSavedBook.value = false
         }
     }
 
